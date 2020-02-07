@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=C:/Users/Hatanaka/STM32CubeIDE/workspace_1.0.1/mouse2019_2/Inc
+HeaderPath=C:/Users/Hatanaka/STM32CubeIDE/workspace_1.0.1/mouse2020/Inc
 HeaderFiles=stm32f4xx_it.h;stm32f4xx_hal_conf.h;main.h;
-SourcePath=C:/Users/Hatanaka/STM32CubeIDE/workspace_1.0.1/mouse2019_2/Src
+SourcePath=C:/Users/Hatanaka/STM32CubeIDE/workspace_1.0.1/mouse2020/Src
 SourceFiles=stm32f4xx_it.c;stm32f4xx_hal_msp.c;main.c;
 
 [PreviousLibFiles]

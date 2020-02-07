@@ -12,7 +12,7 @@
 	volatile float target_degree_z;
 	volatile float omega_min, omega_max;
 	volatile int16_t dg, dgl, dgr;								//a比例制御量
-	volatile float dif_omega_z, old_omega_z, gyro_drift_value;	//a偏差と積分
+	volatile float dif_omega_z, old_omega_z, sum_omega_z, gyro_drift_value;	//a偏差と積分
 #else												//main.c以外からこのファイルが呼ばれている場合
 	/*aグローバル変数の宣言*/
 
@@ -23,7 +23,7 @@
 	extern volatile float omega_min, omega_max;
 	extern volatile int16_t dg, dgl, dgr;							//a比例制御量
 	extern int16_t dif_g;
-	extern volatile float dif_omega_z, old_omega_z, gyro_drift_value;	//a偏差と積分
+	extern volatile float dif_omega_z, old_omega_z, sum_omega_z, gyro_drift_value;	//a偏差と積分
 #endif
 
 

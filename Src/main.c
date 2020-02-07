@@ -160,12 +160,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		//gyro ドリフト量計算
 		if(MF2.FLAG.GDRIFT){
 			gyro_cnt ++;
-			if(gyro_cnt >= 2)dif_omega_z += old_omega_z - gyro_read_z();
-			old_omega_z = gyro_read_z();
+			sum_omega_z += gyro_read_z();
 			full_led_write1(YELLOW);
-			if(gyro_cnt >= 1001) {
+			if(gyro_cnt >= 1000) {
 				MF2.FLAG.GDRIFT = 0;
-				gyro_drift_value = dif_omega_z / gyro_cnt-1;
+				gyro_drift_value = sum_omega_z / gyro_cnt;
 				gyro_cnt = 0;
 				full_led_write1(BLUEGREEN);
 			}

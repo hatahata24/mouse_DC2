@@ -24,27 +24,27 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-mouse2019_2.elf \
+mouse2020.elf \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-mouse2019_2.list \
+mouse2020.list \
 
 OBJCOPY_HEX += \
-mouse2019_2.hex \
+mouse2020.hex \
 
 OBJCOPY_BIN += \
-mouse2019_2.bin \
+mouse2020.bin \
 
 
 # All Target
-all: mouse2019_2.elf secondary-outputs
+all: mouse2020.elf secondary-outputs
 
 # Tool invocations
-mouse2019_2.elf: $(OBJS) $(USER_OBJS) C:\Users\Hatanaka\STM32CubeIDE\workspace_1.0.1\mouse2019_2\STM32F405RGTX_FLASH.ld
-	arm-none-eabi-gcc -o "mouse2019_2.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Hatanaka\STM32CubeIDE\workspace_1.0.1\mouse2019_2\STM32F405RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="mouse2019_2.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+mouse2020.elf: $(OBJS) $(USER_OBJS) C:\Users\Hatanaka\STM32CubeIDE\workspace_1.0.1\mouse2020\STM32F405RGTX_FLASH.ld
+	arm-none-eabi-gcc -o "mouse2020.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Hatanaka\STM32CubeIDE\workspace_1.0.1\mouse2020\STM32F405RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="mouse2020.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -53,18 +53,18 @@ default.size.stdout: $(EXECUTABLES)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-mouse2019_2.list: $(EXECUTABLES)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "mouse2019_2.list"
+mouse2020.list: $(EXECUTABLES)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "mouse2020.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-mouse2019_2.hex: $(EXECUTABLES)
-	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "mouse2019_2.hex"
+mouse2020.hex: $(EXECUTABLES)
+	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "mouse2020.hex"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-mouse2019_2.bin: $(EXECUTABLES)
-	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "mouse2019_2.bin"
+mouse2020.bin: $(EXECUTABLES)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "mouse2020.bin"
 	@echo 'Finished building: $@'
 	@echo ' '
 

@@ -1698,21 +1698,21 @@ void turn_dir(uint8_t t_pat, uint8_t t_mode){
 	if(t_mode < 2){												//4方位モード
 		mouse.dir = (mouse.dir + t_pat) & 0x03;					//a指定された分mouse.dirを回転させる
 		if(t_mode == 1){
-			if(t_pat == 0x01) target_degree_z -= 90.5;			//a目標角度+右90度
-			if(t_pat == 0xff) target_degree_z += 90.5;			//a目標角度+左90度
-			if(t_pat == 0x02) target_degree_z -= 181;			//a目標角度+右180度
+			if(t_pat == 0x01) target_degree_z -= 90;			//a目標角度+右90度
+			if(t_pat == 0xff) target_degree_z += 90;			//a目標角度+左90度
+			if(t_pat == 0x02) target_degree_z -= 180;			//a目標角度+右180度
 		}
 	}else{														//8方位モード
 		mouse.dir = (mouse.dir + t_pat) & 0x07;					//a指定された分mouse.dirを回転させる
 		if(t_mode == 3){
-			if(t_pat == 0x01) target_degree_z -= 45.25;			//a目標角度+右90度
-			if(t_pat == 0x02) target_degree_z -= 90.5;			//a目標角度+左90度
-			if(t_pat == 0x03) target_degree_z -= 135.75;		//a目標角度+右180度
-			if(t_pat == 0x04) target_degree_z -= 181;			//a目標角度+右180度
-			if(t_pat == 0xff) target_degree_z += 45.25;			//a目標角度+右90度
-			if(t_pat == 0xfe) target_degree_z += 90.5;			//a目標角度+左90度
-			if(t_pat == 0xfd) target_degree_z += 135.75;		//a目標角度+右180度
-			if(t_pat == 0xfc) target_degree_z += 181;			//a目標角度+右180度
+			if(t_pat == 0x01) target_degree_z -= 45;			//a目標角度+右90度
+			if(t_pat == 0x02) target_degree_z -= 90;			//a目標角度+左90度
+			if(t_pat == 0x03) target_degree_z -= 135;			//a目標角度+右180度
+			if(t_pat == 0x04) target_degree_z -= 180;			//a目標角度+右180度
+			if(t_pat == 0xff) target_degree_z += 45;			//a目標角度+右90度
+			if(t_pat == 0xfe) target_degree_z += 90;			//a目標角度+左90度
+			if(t_pat == 0xfd) target_degree_z += 135;			//a目標角度+右180度
+			if(t_pat == 0xfc) target_degree_z += 180;			//a目標角度+右180度
 		}
 	}
 }

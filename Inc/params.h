@@ -7,7 +7,7 @@
 
 
 //a機体情報
-#define DIAMETER 24.7//23.7
+#define DIAMETER 23.7
 #define TREAD 66
 
 //PID パラメータ
@@ -16,7 +16,7 @@
 #define Kpr 2
 #define Ti 1000
 #define Td 0
-#define Kp_o 3
+#define Kp_o 2//3
 #define Ti_o 1000
 #define Td_o 0
 
@@ -46,8 +46,8 @@
 #define SLALOM_OMEGA 550
 #define SLALOM_DEG (SLALOM_OMEGA*SLALOM_OMEGA/SLALOM_DEGACCEL/2)
 
-#define SLALOM_2_OFFSET_F 18//25//16.5
-#define SLALOM_2_OFFSET_B 25//16.5
+#define SLALOM_2_OFFSET_F 8//18.5
+#define SLALOM_2_OFFSET_B 40//18.5
 #define SLALOM_2_DEGACCEL 4000
 #define SLALOM_2_OMEGA 550
 #define SLALOM_2_DEG (SLALOM_2_OMEGA*SLALOM_2_OMEGA/SLALOM_2_DEGACCEL/2)
@@ -300,9 +300,9 @@
 #define log_allay 200
 
 //gyro 制御パラメータ
-#define CTRL_BASE_G		1				//G
-#define CTRL_MAX_G		1000//500			//control value max
-#define CTRL_CONT_G		200//40				//Proportional C
+#define CTRL_BASE_G		1					//G
+#define CTRL_MAX_G		500					//control value max
+#define CTRL_CONT_G		100//200//40			//Proportional C
 
 
 //sensor 系パラメータ

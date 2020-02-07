@@ -206,18 +206,20 @@ void sensor_test(){
 				case 2:
 					//----Gyro sensor check----
 					printf("Gyro Sensor Check.\n");
+					int gyro_drift_value2, dif_omega_z2;
+
 					int accel_x, accel_y, accel_z;
 					int gyro_x, gyro_y, gyro_z;
 					int deg_x, deg_y, deg_z;
 					  while(1){
-						  accel_x = accel_read_x();
-						  accel_y = accel_read_y();
-						  accel_z = accel_read_z();
-						  gyro_x = gyro_read_x();
-						  gyro_y = gyro_read_y();
+//						  accel_x = accel_read_x();
+//						  accel_y = accel_read_y();
+//						  accel_z = accel_read_z();
+//						  gyro_x = gyro_read_x();
+//						  gyro_y = gyro_read_y();
 						  gyro_z = gyro_read_z();
-						  deg_x = degree_x;
-						  deg_y = degree_y;
+//						  deg_x = degree_x;
+//						  deg_y = degree_y;
 						  deg_z = degree_z;
 
 						  //printf("Accel x: %3d, y: %3d, z: %3d\n", accel_x, accel_y, accel_z);
@@ -227,6 +229,17 @@ void sensor_test(){
 						}
 					break;
 				case 3:
+					//----Gyro sensor check----
+					printf("Gyro Sensor Check.\n");
+
+					int gyro_z3, deg_z3;
+					  while(1){
+						  gyro_z3 = gyro_read_z();
+						  deg_z3 = degree_z;
+
+						  printf("Gyro  z: %3d , Deg   z: %3d\n", gyro_z3, deg_z3);
+						  HAL_Delay(111);
+						}
 					break;
 				case 4:
 					break;

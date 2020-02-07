@@ -321,7 +321,7 @@ void slalomF(int16_t accel_p, int16_t speed_p, uint8_t dist_p, uint16_t wall_fl,
 //+++++++++++++++++++++++++++++++++++++++++++++++
 void slalomR(int32_t degaccel_p, int16_t omega_p, int16_t degree_p, int16_t speed_p){
 	MF.FLAG.GYRO = 1;
-//	full_led_write(WHITE);
+	full_led_write2(YELLOW);
 	target_degaccel_z = degaccel_p;
 	target_omega_z = 0;
 	speed_G = speed_p;
@@ -346,9 +346,9 @@ void slalomR(int32_t degaccel_p, int16_t omega_p, int16_t degree_p, int16_t spee
 	target_degaccel_z = 0;
 
 	if(omega_p < 0){
-		while(degree_z > target_degree_z+(degree_p-c_degree-4));
+		while(degree_z > target_degree_z+(degree_p-c_degree-8));
 	}else{
-		while(degree_z < target_degree_z+(degree_p-c_degree+4));
+		while(degree_z < target_degree_z+(degree_p-c_degree+8));
 	}
 
 	target_degaccel_z = -degaccel_p;
@@ -368,6 +368,7 @@ void slalomR(int32_t degaccel_p, int16_t omega_p, int16_t degree_p, int16_t spee
 //a戻り値：なし
 //+++++++++++++++++++++++++++++++++++++++++++++++
 void slalomB(int16_t accel_p, int16_t speed_p, uint8_t dist_p){
+	full_led_write2(BLUEGREEN);
 	MF.FLAG.GYRO = 0;
 	MF.FLAG.SPD = 1;
 
