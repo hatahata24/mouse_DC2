@@ -21,7 +21,7 @@ void drive_init(void){
 // a戻り値：なし
 //+++++++++++++++++++++++++++++++++++++++++++++++
 void drive_ready(void){
-	  while(ad_fl <= WALL_BASE_FL){
+	  while(ad_fl <= WALL_BASE_FL && ad_fr <= WALL_BASE_FR){
 		  led_write(1, 1, 1);
 		  HAL_Delay(200);
 		  led_write(0, 0, 0);
@@ -58,6 +58,27 @@ void drive_stop(void){
 	pulse_l = pulse_r = 0;		//aモータ出力の初期化
 	MF.FLAG.DRV = 0;
 	MF.FLAG.SPD = 0;
+}
+
+
+//+++++++++++++++++++++++++++++++++++++++++++++++
+//drive_break
+// a走行中に急停止する
+// a引数：なし
+// a戻り値：なし
+//+++++++++++++++++++++++++++++++++++++++++++++++
+void drive_break(void){
+	target_speed_l = target_speed_r = 0;		//a目標速度の初期化
+	accel_l = accel_r = 0;		//a加速度の初期化
+	pulse_l = pulse_r = 0;		//aモータ出力の初期化
+	MF.FLAG.DRV = 1;
+	MF.FLAG.SPD = 1;
+	control_stop();
+	full_led_write1(RED);
+	HAL_Delay(100);
+	MF.FLAG.DRV = 0;
+	MF.FLAG.SPD = 0;
+	full_led_write1(BLUE);
 }
 
 
@@ -157,7 +178,7 @@ void run_select(){
 			  }
 			  printf("Mode : %d\n", mode);
 		}
-		if(ad_fl >= WALL_BASE_FL){
+		if(ad_fl >= WALL_BASE_FL && ad_fr >= WALL_BASE_FR){
 			  run_mode = mode;
 			  full_led_write1(BLUEGREEN);
 			  break;
@@ -293,19 +314,10 @@ void slalomF(int16_t accel_p, int16_t speed_p, uint8_t dist_p, uint16_t wall_fl,
 
 	control_start();
 	dist_l = dist_r = 0;
-	if(run_mode == 5 && MF2.FLAG.TEMP){
-		while(dist_l < dist_p || dist_r < dist_p){
-			if(ad_fl > wall_fl || ad_fr > wall_fr){
-				full_led_write1(RED);
-				break;
-			}
-		}
-	}else{
-		while(dist_l < dist_p && dist_r < dist_p){
-			if(ad_fl > wall_fl || ad_fr > wall_fr){
-				full_led_write1(RED);
-				break;
-			}
+	while((dist_l+dist_r)/2 < dist_p){
+		if(ad_fl > wall_fl || ad_fr > wall_fr){
+			full_led_write2(RED);
+			break;
 		}
 	}
 	drive_stop();
@@ -345,19 +357,28 @@ void slalomR(int32_t degaccel_p, int16_t omega_p, int16_t degree_p, int16_t spee
 
 	target_degaccel_z = 0;
 
-	if(omega_p < 0){
-		while(degree_z > target_degree_z+(degree_p-c_degree-8));
+	if(MF2.FLAG.TEMP){
+		if(omega_p < 0){
+			while(degree_z > target_degree_z+degree_p);
+		}else{
+			while(degree_z < target_degree_z+degree_p);
+		}
 	}else{
-		while(degree_z < target_degree_z+(degree_p-c_degree+8));
+		if(omega_p < 0){
+			while(degree_z > target_degree_z+(degree_p-c_degree-4));
+		}else{
+			while(degree_z < target_degree_z+(degree_p-c_degree+4));
+		}
+
+		target_degaccel_z = -degaccel_p;
+
+		if(omega_p < 0){
+			while(degree_z > target_degree_z+degree_p);
+		}else{
+			while(degree_z < target_degree_z+degree_p);
+		}
 	}
 
-	target_degaccel_z = -degaccel_p;
-
-	if(omega_p < 0){
-		while(degree_z > target_degree_z+degree_p);
-	}else{
-		while(degree_z < target_degree_z+degree_p);
-	}
 }
 
 
@@ -377,7 +398,7 @@ void slalomB(int16_t accel_p, int16_t speed_p, uint8_t dist_p){
 
 	control_start();
 	dist_l = dist_r = 0;
-	while(dist_l < dist_p && dist_r < dist_p);
+	while((dist_l+dist_r)/2 < dist_p);
 }
 
 
@@ -861,17 +882,17 @@ void slalom_R90(void){
 		slalomB(10000, SPEED_1, SLALOM_OFFSET_B);
 	}else if(run_mode == 2){
 		slalomF(10000, SPEED_2, SLALOM_2_OFFSET_F, SLALOM_2_WALL_FL, SLALOM_2_WALL_FR);
-		slalomR(-SLALOM_2_DEGACCEL, -SLALOM_2_OMEGA, -85, SPEED_2);
+		slalomR(-SLALOM_2_DEGACCEL, -SLALOM_2_OMEGA, -90, SPEED_2);
 
 		if(!MF.FLAG.XDIR){
 			turn_dir(DIR_TURN_R90, 1);									//aマイクロマウス内部位置情報でも左回転処理&目標角度左90度
 		}else{
 			turn_dir(DIR_TURN_R90_8, 3);								//aマイクロマウス内部位置情報でも左回転処理&目標角度左90度
 		}
-		slalomB(10000, SPEED_2, SLALOM_2_OFFSET_B);
+		slalomB(10000, SPEED_2, SLALOM_2_OFFSET_B-10);					//B-10
 	}else if(run_mode == 3){
 		slalomF(10000, SPEED_3, SLALOM_3_OFFSET_F, SLALOM_3_WALL_FL, SLALOM_3_WALL_FR);
-		slalomR(-SLALOM_3_DEGACCEL, -SLALOM_3_OMEGA, -70, SPEED_3);
+		slalomR(-SLALOM_3_DEGACCEL, -SLALOM_3_OMEGA, -80, SPEED_3);
 
 		if(!MF.FLAG.XDIR){
 			turn_dir(DIR_TURN_R90, 1);									//aマイクロマウス内部位置情報でも左回転処理&目標角度左90度
@@ -881,7 +902,7 @@ void slalom_R90(void){
 		slalomB(10000, SPEED_3, SLALOM_3_OFFSET_B);
 	}else if(run_mode == 4){
 		slalomF(10000, SPEED_4, SLALOM_4_OFFSET_F, SLALOM_4_WALL_FL, SLALOM_4_WALL_FR);
-		slalomR(-SLALOM_4_DEGACCEL, -SLALOM_4_OMEGA, -50, SPEED_4);
+		slalomR(-SLALOM_4_DEGACCEL, -SLALOM_4_OMEGA, -60, SPEED_4);
 
 		if(!MF.FLAG.XDIR){
 			turn_dir(DIR_TURN_R90, 1);									//aマイクロマウス内部位置情報でも左回転処理&目標角度左90度
@@ -892,7 +913,6 @@ void slalom_R90(void){
 	}else if(run_mode == 5){
 		MF2.FLAG.TEMP = 1;
 		slalomF(10000, SPEED_5, SLALOM_5_OFFSET_F, SLALOM_5_WALL_FL, SLALOM_5_WALL_FR);
-		MF2.FLAG.TEMP = 0;
 		slalomR(-SLALOM_5_DEGACCEL, -SLALOM_5_OMEGA, -20, SPEED_5);
 
 		if(!MF.FLAG.XDIR){
@@ -900,7 +920,6 @@ void slalom_R90(void){
 		}else{
 			turn_dir(DIR_TURN_R90_8, 3);								//aマイクロマウス内部位置情報でも左回転処理&目標角度左90度
 		}
-		MF2.FLAG.TEMP = 1;
 		slalomB(10000, SPEED_5, SLALOM_5_OFFSET_B);
 		MF2.FLAG.TEMP = 0;
 	}else if(run_mode == 6){
@@ -942,7 +961,7 @@ void slalom_L90(void){
 		slalomB(10000, SPEED_1, SLALOM_OFFSET_B);
 	}else if(run_mode == 2){
 		slalomF(10000, SPEED_2, SLALOM_2_OFFSET_F, SLALOM_2_WALL_FL, SLALOM_2_WALL_FR);
-		slalomR(SLALOM_2_DEGACCEL, SLALOM_2_OMEGA, 85, SPEED_2);
+		slalomR(SLALOM_2_DEGACCEL, SLALOM_2_OMEGA, 90, SPEED_2);
 
 		if(!MF.FLAG.XDIR){
 			turn_dir(DIR_TURN_L90, 1);									//aマイクロマウス内部位置情報でも左回転処理&目標角度左90度
@@ -952,7 +971,7 @@ void slalom_L90(void){
 		slalomB(10000, SPEED_2, SLALOM_2_OFFSET_B);
 	}else if(run_mode == 3){
 		slalomF(10000, SPEED_3, SLALOM_3_OFFSET_F, SLALOM_3_WALL_FL, SLALOM_3_WALL_FR);
-		slalomR(SLALOM_3_DEGACCEL, SLALOM_3_OMEGA, 70, SPEED_3);
+		slalomR(SLALOM_3_DEGACCEL, SLALOM_3_OMEGA, 80, SPEED_3);
 
 		if(!MF.FLAG.XDIR){
 			turn_dir(DIR_TURN_L90, 1);									//aマイクロマウス内部位置情報でも左回転処理&目標角度右90度
@@ -962,7 +981,7 @@ void slalom_L90(void){
 		slalomB(10000, SPEED_3, SLALOM_3_OFFSET_B);
 	}else if(run_mode == 4){
 		slalomF(10000, SPEED_4, SLALOM_4_OFFSET_F, SLALOM_4_WALL_FL, SLALOM_4_WALL_FR);
-		slalomR(SLALOM_4_DEGACCEL, SLALOM_4_OMEGA, 50, SPEED_4);
+		slalomR(SLALOM_4_DEGACCEL, SLALOM_4_OMEGA, 60, SPEED_4);
 
 		if(!MF.FLAG.XDIR){
 			turn_dir(DIR_TURN_L90, 1);									//aマイクロマウス内部位置情報でも左回転処理&目標角度右90度
@@ -973,7 +992,6 @@ void slalom_L90(void){
 	}else if(run_mode == 5){
 		MF2.FLAG.TEMP = 1;
 		slalomF(10000, SPEED_5, SLALOM_5_OFFSET_F, SLALOM_5_WALL_FL, SLALOM_5_WALL_FR);
-		MF2.FLAG.TEMP = 0;
 		slalomR(SLALOM_5_DEGACCEL, SLALOM_5_OMEGA, 20, SPEED_5);
 
 		if(!MF.FLAG.XDIR){
@@ -981,7 +999,6 @@ void slalom_L90(void){
 		}else{
 			turn_dir(DIR_TURN_L90_8, 3);								//aマイクロマウス内部位置情報でも左回転処理&目標角度右90度
 		}
-		MF2.FLAG.TEMP = 1;
 		slalomB(10000, SPEED_5, SLALOM_5_OFFSET_B);
 		MF2.FLAG.TEMP = 0;
 	}else if(run_mode == 6){
@@ -2279,6 +2296,7 @@ void slalom_test(void){
 	printf("Test Slalom Run, Mode : %d\n", mode);
 
 	run_select();
+	dist_l = 0;
 
 	while(1){
 		led_write(mode & 0b001, mode & 0b010, mode & 0b100);
@@ -2460,7 +2478,7 @@ void slalom_test(void){
 					break;
 
 			  }
-			  full_led_write1(RED);
+			  drive_break();
 			  dist_l = 0;
 		  }
 	}
@@ -2701,7 +2719,7 @@ void v_test(void){
 					half_sectionD();
 					break;
 			  }
-			  full_led_write1(RED);
+			  drive_break();
 			  dist_l = 0;
 		  }
 	}
